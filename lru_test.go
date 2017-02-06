@@ -54,7 +54,7 @@ func TestGet(t *testing.T) {
 		if ok != tt.expectedOk {
 			t.Fatalf("%s: cache hit = %v; want %v", tt.name, ok, !ok)
 		} else if ok && val != 1234 {
-			t.Fatalf("%s expected get to return 1234 but got %v", tt.name, val)
+			t.Fatalf("TestGet failed, %s expected 1234, got %v", tt.name, val)
 		}
 	}
 }
