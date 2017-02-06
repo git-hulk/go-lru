@@ -45,7 +45,7 @@ type Key interface{}
 type entry struct {
 	key    Key
 	value  interface{}
-	expire int64 // unit ns
+	expire int64
 }
 
 // NewCache creates a new Cache.
@@ -249,4 +249,27 @@ func (c *Cache) TTL(key Key) int64 {
 		return 0
 	}
 	return -2
+}
+
+// Keys return all the keys in cache
+func (c *Cache) Keys() []interface{} {
+	c.lock.RLock()
+	defer c.lock.RUnlock()
+	keys := make([]interface{}, 0, c.ll.Len())
+	for ele := c.ll.Front(); ele != nil; ele = ele.Next() {
+		if ele.Value.(*entry).isExpired() {
+			c.removeElement(ele)
+		} else {
+			keys = append(keys, ele.Value.(*entry).key)
+		}
+	}
+	return keys
+}
+
+// FlushAll remove all the keys in cache
+func (c *Cache) FlushAll() {
+	c.lock.Lock()
+	defer c.lock.Unlock()
+	c.ll = list.New()
+	c.cache = make(map[interface{}]*list.Element)
 }

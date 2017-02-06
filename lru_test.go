@@ -86,7 +86,7 @@ func TestRemove(t *testing.T) {
 	if val, ok := lru.Get("myKey"); !ok {
 		t.Fatal("TestRemove returned no match")
 	} else if val != 1234 {
-		t.Fatalf("TestRemove failed.  Expected %d, got %v", 1234, val)
+		t.Fatalf("TestRemove failed, expected %d, got %v", 1234, val)
 	}
 
 	lru.Remove("myKey")
@@ -111,5 +111,32 @@ func TestTTL(t *testing.T) {
 	}
 	if lru.TTL("notExistKey") != -2 {
 		t.Fatal("TestTtl not exist key ttl != -2")
+	}
+}
+
+func TestKeys(t *testing.T) {
+	lru := NewCache(100)
+	lru.Set("a", 1)
+	lru.Set("b", 1, 1)
+	keys := lru.Keys()
+	if len(keys) != 2 {
+		t.Fatalf("TestKeys failed, expected %d, got %d", 2, len(keys))
+	}
+	time.Sleep(1100 * time.Millisecond)
+	keys = lru.Keys()
+	if len(keys) != 1 {
+		t.Fatalf("TestKeys failed, expected %d, got %d", 1, len(keys))
+	}
+}
+
+func TestFlushAll(t *testing.T) {
+	lru := NewCache(100)
+	lru.Set("a", 1)
+	lru.Set("b", 1)
+	lru.Set("c", 1)
+	lru.FlushAll()
+	lru.Set("a", 1)
+	if lru.Len() != 1 {
+		t.Fatalf("TestFlushAll failed, expected %d, got %d", 1, lru.Len())
 	}
 }
