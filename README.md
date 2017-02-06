@@ -1,4 +1,4 @@
-# go-lru
+# go-lru [![Go Report Card](https://goreportcard.com/badge/github.com/git-hulk/go-lru)](https://goreportcard.com/report/github.com/git-hulk/go-lru) [![Build Status](https://travis-ci.org/git-hulk/go-lru.svg?branch=master)](https://travis-ci.org/git-hulk/go-lru) 
 
 go-lru is an MIT-licensed Go LRU cache bases on GroupCache, with expire time supported
 
