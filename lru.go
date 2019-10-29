@@ -91,6 +91,7 @@ func (c *Cache) expiredBackground() {
 			// In the worst case we process all the keys in 10 seconds
 			// In normal conditions (a reasonable number of keys) we process
 			// all the keys in a shorter time.
+			c.lock.Lock()
 			numEntries := c.ll.Len()
 			iterations := numEntries / (hz * 10)
 			if iterations < minIterations {
@@ -99,7 +100,6 @@ func (c *Cache) expiredBackground() {
 					iterations = numEntries
 				}
 			}
-			c.lock.Lock()
 			for i := 0; i < iterations && c.ll.Len() > 0; i++ {
 				ele := c.ll.Back()
 				if ele.Value.(*entry).isExpired() {
